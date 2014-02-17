@@ -171,7 +171,7 @@ describe('Emitter', function(){
         var emitter = new Emitter;
         function foo(){}
         emitter.on('foo', foo);
-        emitter.listeners('foo').should.eql([foo]);
+        emitter.listeners('foo').should.eql([ { fn: foo, ctx: emitter } ]);
       })
     })
 
