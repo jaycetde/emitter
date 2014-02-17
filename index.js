@@ -40,8 +40,9 @@ function mixin(obj) {
  */
 
 Emitter.prototype.on =
-Emitter.prototype.addEventListener = function(event, fn){
+Emitter.prototype.addEventListener = function(event, fn, ctx){
   this._callbacks = this._callbacks || {};
+  fn.ctx = ctx || this;
   (this._callbacks[event] = this._callbacks[event] || [])
     .push(fn);
   return this;
@@ -57,7 +58,7 @@ Emitter.prototype.addEventListener = function(event, fn){
  * @api public
  */
 
-Emitter.prototype.once = function(event, fn){
+Emitter.prototype.once = function(event, fn, ctx){
   var self = this;
   this._callbacks = this._callbacks || {};
 
@@ -67,7 +68,7 @@ Emitter.prototype.once = function(event, fn){
   }
 
   on.fn = fn;
-  this.on(event, on);
+  this.on(event, on, ctx);
   return this;
 };
 
@@ -131,7 +132,7 @@ Emitter.prototype.emit = function(event){
   if (callbacks) {
     callbacks = callbacks.slice(0);
     for (var i = 0, len = callbacks.length; i < len; ++i) {
-      callbacks[i].apply(this, args);
+      callbacks[i].apply(callbacks[i].ctx, args);
     }
   }
 

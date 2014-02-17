@@ -38,6 +38,22 @@ describe('Emitter', function(){
       calls.should.eql([ 'one', 1, 'two', 1, 'one', 2, 'two', 2 ]);
     })
   })
+  
+  describe('.on(event, fn, ctx)', function () {
+      it('should use the correct context', function () {
+          var emitter = new Emitter;
+          var ctx = { a: 1, b: 2, c: 3 };
+          var calls = [];
+          
+          emitter.on('foo', function (val) {
+              calls.push(val, this.a, this.b, this.c);
+          }, ctx);
+          
+          emitter.emit('foo', 0);
+          
+          calls.should.eql([ 0, 1, 2, 3 ]);
+      })
+  })
 
   describe('.once(event, fn)', function(){
     it('should add a single-shot listener', function(){
